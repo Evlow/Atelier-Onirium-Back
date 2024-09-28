@@ -3,17 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure la chaîne de connexion
+// Configuration de la chaîne de connexion
 var connectionString = builder.Configuration.GetConnectionString("BddConnection");
+
+// Configuration du DbContext et Identity
+builder.Services.AddDbContext<AtelierOniriumContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))
+        , mysqlOptions => mysqlOptions.EnableRetryOnFailure())); // Ajoute cette ligne
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-// Ajoute le DbContext à l'injection de dépendances
-builder.Services.AddDbContext<AtelierOniriumContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -27,9 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
