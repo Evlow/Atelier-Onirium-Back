@@ -9,12 +9,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AtelierOniriumContext>(opt =>
-{
-   opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnexion"));
-});
+
 
 var app = builder.Build();
+// Configure la chaîne de connexion
+var connectionString = builder.Configuration.GetConnectionString("BddConnection");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
