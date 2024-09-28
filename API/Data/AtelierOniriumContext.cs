@@ -7,11 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
+
     public class AtelierOniriumContext : DbContext
     {
-        public AtelierOniriumContext (DbContextOptions options) : base (options){
-            
+        public AtelierOniriumContext(DbContextOptions<AtelierOniriumContext> options)
+            : base(options)
+        {
         }
-        public DbSet<Creation>  Creations {get; set;}
+        public DbSet<Creation> Creations { get; set; }
     }
 }

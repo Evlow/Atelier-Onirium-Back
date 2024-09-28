@@ -4870,6 +4870,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Microsoft.EntityFrameworkCore >= 8.0.8",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.8",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.8",
       "Microsoft.EntityFrameworkCore.Sqlite >= 8.0.8",
@@ -4883,11 +4884,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\mathi\\Desktop\\Atelier Onirium\\Atelier-Onirium-Back\\API\\API.csproj",
+      "projectUniqueName": "C:\\Users\\mathi\\Desktop\\Atelier Onirium\\Atelier-Onirium-Back\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "c:\\Users\\mathi\\Desktop\\Atelier Onirium\\Atelier-Onirium-Back\\API\\API.csproj",
+      "projectPath": "C:\\Users\\mathi\\Desktop\\Atelier Onirium\\Atelier-Onirium-Back\\API\\API.csproj",
       "packagesPath": "C:\\Users\\mathi\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\mathi\\Desktop\\Atelier Onirium\\Atelier-Onirium-Back\\API\\obj\\",
+      "outputPath": "C:\\Users\\mathi\\Desktop\\Atelier Onirium\\Atelier-Onirium-Back\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\mathi\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -4922,6 +4923,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[8.0.8, )"
+          },
           "Microsoft.EntityFrameworkCore.Design": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
