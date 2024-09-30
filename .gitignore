@@ -5,10 +5,16 @@
 # .NET Core build folders
 bin/
 obj/
+*.dll
 
 # Common node modules locations
 /node_modules
 /wwwroot/node_modules
+
+### Logs ###
+# Logs d'application
+logs/
+*.log
 
 ### VisualStudioCode ###
 .vscode/*
@@ -63,6 +69,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+*.dll
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -392,36 +399,4 @@ ASALocalRun/
 .localhistory/
 
 # Visual Studio History (VSHistory) files
-.vshistory/
-
-# BeatPulse healthcheck temp database
-healthchecksdb
-
-# Backup folder for Package Reference Convert tool in Visual Studio 2017
-MigrationBackup/
-
-# Ionide (cross platform F# VS Code tools) working folder
-.ionide/
-
-# Fody - auto-generated XML schema
-FodyWeavers.xsd
-
-# VS Code files for those working on multiple tools
-*.code-workspace
-
-# Local History for Visual Studio Code
-
-# Windows Installer files from build outputs
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-
-# JetBrains Rider
-*.sln.iml
-
-### VisualStudio Patch ###
-# Additional files built by Visual Studio
-
-# End of https://www.toptal.com/developers/gitignore/api/dotnetcore,visualstudiocode,visualstudio
+.vsh
