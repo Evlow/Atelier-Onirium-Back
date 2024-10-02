@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Business.DTO;
+using API.Business.ServicesContract;
 using API.Data.RepositoryContract;
 using AutoMapper;
 
 namespace API.Business.Services
 {
-    public class CreationService
+    public class CreationServices : ICreationServices
     {
         // Dépendances injectées pour accéder aux données de création et au mappage d'objets
         private readonly ICreationRepository _creationRepository;
         private readonly IMapper _mapper;
 
         // Constructeur pour injecter les dépendances nécessaires
-        public CreationService(ICreationRepository creationRepository, IMapper mapper)
+        public CreationServices(ICreationRepository creationRepository, IMapper mapper)
         {
             _creationRepository = creationRepository;
             _mapper = mapper;

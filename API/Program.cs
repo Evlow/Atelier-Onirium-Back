@@ -1,4 +1,5 @@
 using API.Data;
+using API.Ioc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,10 @@ builder.Services.AddDbContext<AtelierOniriumContext>(options =>
 // Ajout des services au conteneur d'injection de dépendances
 // Ajoute les contrôleurs pour gérer les requêtes HTTP
 builder.Services.AddControllers();
+//Dependency Injection
+builder.Services.ConfigureInjectionDependencyRepository();
 
+builder.Services.ConfigureInjectionDependencyService();
 // Configure les outils d'exploration des API et la documentation avec Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
