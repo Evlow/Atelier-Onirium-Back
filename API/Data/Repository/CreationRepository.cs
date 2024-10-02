@@ -27,5 +27,12 @@ namespace API.Data.Repository
             // Récupération de la liste des créations en utilisant Entity Framework Core
             return await _dBContext.Creations.ToListAsync().ConfigureAwait(false);
         }
+       
+        public async Task<Creation> GetCreationByIdAsync(int id)
+        {
+
+            return await _dBContext.Creations.FirstOrDefaultAsync(creation => creation.Id == id);
+
+        }
     }
 }
