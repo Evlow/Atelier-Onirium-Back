@@ -8,12 +8,15 @@ using AutoMapper;
 
 namespace API.AutoMapper
 {
+    // Profil AutoMapper personnalisé pour configurer les mappages entre les entités et les DTOs
     public class AutoMapper : Profile
     {
+        // Constructeur pour définir les règles de mappage
         public AutoMapper()
         {
+            // Mappage bidirectionnel entre l'entité Creation et le DTO CreationDTO
+            // ReverseMap() permet de mapper dans les deux sens : de Creation vers CreationDTO et vice-versa
             CreateMap<Creation, CreationDTO>().ReverseMap();
-
         }
     }
 }
