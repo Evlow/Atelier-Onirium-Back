@@ -26,5 +26,26 @@ namespace API.Controllers
 
             return Ok(creations);
         }
-    }
+
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(CreationDTO), 200)]
+        public async Task<ActionResult> CreationId(int id)
+        {
+            try
+            {
+                var creationId = await _creationServices.GetCreationByIdAsync(id).ConfigureAwait(false);
+
+                return Ok(creationId);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    Error = e.Message,
+                });
+            }
+
+        }
+    };
 }
