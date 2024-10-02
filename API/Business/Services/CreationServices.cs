@@ -29,17 +29,21 @@ namespace API.Business.Services
             // Récupère les créations depuis la base de données de manière asynchrone
             var creations = await _creationRepository.GetCreationsAsync().ConfigureAwait(false);
 
-            // Initialisation d'une liste de DTOs avec la même capacité que la liste des créations récupérées
             List<CreationDTO> listCreationDTO = new List<CreationDTO>(creations.Count);
 
-            // Parcours des créations et mappage vers des objets CreationDTO
             foreach (var creation in creations)
             {
                 listCreationDTO.Add(_mapper.Map<CreationDTO>(creation));
             }
 
-            // Retourne la liste des DTOs
             return listCreationDTO;
+        }
+
+        public async Task<CreationDTO> GetCreationByIdAsync(int id)
+        {
+            var creationGet = await _creationRepository.GetCreationByIdAsync(id).ConfigureAwait(false);
+            return _mapper.Map<CreationDTO>(creationGet);
+
         }
 
     }
