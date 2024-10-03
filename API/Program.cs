@@ -34,7 +34,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Utiliser CORS avant Authorization et HTTPS redirection
 app.UseCors("_myAllowSpecificOrigins");
 
 app.UseHttpsRedirection();
