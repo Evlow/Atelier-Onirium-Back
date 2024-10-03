@@ -403,3 +403,4 @@ ASALocalRun/
 .vsh
 API/bin/Debug/net8.0/API.dll
 API/bin/Debug/net8.0/API.exe
+API/appsettings.json
