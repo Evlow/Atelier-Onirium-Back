@@ -45,6 +45,12 @@ namespace API.Business.Services
             return _mapper.Map<CreationDTO>(creationGet);
 
         }
+         public async Task<CreationDTO> GetCreationByNameAsync(string name)
+        {
+            var creationGet = await _creationRepository.GetCreationByNameAsync(name).ConfigureAwait(false);
+            return _mapper.Map<CreationDTO>(creationGet);
+
+        }
 
     }
 }

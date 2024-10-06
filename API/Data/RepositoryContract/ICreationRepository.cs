@@ -12,5 +12,6 @@ namespace API.Data.RepositoryContract
         // Méthode asynchrone pour récupérer une liste de créations
         Task<List<Creation>> GetCreationsAsync();
         Task<Creation> GetCreationByIdAsync(int id);
+        Task<Creation> GetCreationByNameAsync(string name);
     }
 }
