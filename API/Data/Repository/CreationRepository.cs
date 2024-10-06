@@ -34,5 +34,11 @@ namespace API.Data.Repository
             return await _dBContext.Creations.FirstOrDefaultAsync(creation => creation.Id == id);
 
         }
+            public async Task<Creation> GetCreationByNameAsync(string name)
+        {
+
+            return await _dBContext.Creations.FirstOrDefaultAsync(creation => creation.Name == name);
+
+        }
     }
 }
