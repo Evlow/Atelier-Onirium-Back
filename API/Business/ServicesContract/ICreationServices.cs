@@ -13,5 +13,6 @@ namespace API.Business.ServicesContract
         // Méthode asynchrone pour obtenir la liste des créations sous forme de DTOs
         Task<List<CreationDTO>> GetCreationsAsync();
         Task<CreationDTO> GetCreationByIdAsync(int Id);
+        Task<CreationDTO> GetCreationByNameAsync(string name);
     }
 }
