@@ -1,32 +1,90 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using API.Data.RepositoryContract;
 using API.Entities;
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data.Repository
 {
     public class BasketRepository : IBasketRepository
-    {  // Contexte de base de données injecté pour accéder aux entités
+    {
         private readonly IAtelierOniriumDBContext _dBContext;
 
-        // Constructeur qui initialise le contexte de base de données
         public BasketRepository(IAtelierOniriumDBContext dBContext)
         {
-            // Correction : Utiliser dBContext au lieu de _dBContext
-            _dBContext = dBContext; // Initialisation du contexte de base de données
+            _dBContext = dBContext;
         }
-        
-         // Récupérer un panier par BuyerId
-    public async Task<Basket> GetBasketAsync(string buyerId)
-    {
-        return await _dBContext.Baskets
-            .Include(i => i.Items)
-            .ThenInclude(c => c.Creation)
-            .FirstOrDefaultAsync(x => x.BuyerId == buyerId);
-    }
+
+        // Récupérer un panier par BuyerId
+        public async Task<Basket> GetBasketAsync(string buyerId)
+        {
+            return await RetrieveBasketAsync(buyerId);
+        }
+
+        public async Task<Basket> AddItemToBasketAsync(string buyerId, int productId, int quantity)
+        {
+            var basket = await RetrieveBasketAsync(buyerId);
+
+            // Si le panier n'existe pas, créez-en un nouveau
+            if (basket == null)
+            {
+                basket = new Basket { BuyerId = buyerId };
+                await _dBContext.Baskets.AddAsync(basket);
+            }
+
+            var product = await _dBContext.Creations.FindAsync(productId);
+            if (product == null) return null; // Gérer le cas où le produit n'existe pas
+
+            basket.AddItem(product, quantity);
+
+            // Enregistrez les modifications et retournez le panier mis à jour
+            await SaveChangesAsync();
+            return basket;
+        }
+
+        public async Task<Basket> CreateBasketAsync(string buyerId)
+        {
+            var basket = new Basket { BuyerId = buyerId };
+            await _dBContext.Baskets.AddAsync(basket);
+            await SaveChangesAsync(); // Enregistrer les changements
+            return basket;
+        }
+
+        public async Task<bool> RemoveItemFromBasketAsync(string buyerId, int productId, int quantity)
+        {
+            var basket = await RetrieveBasketAsync(buyerId);
+            if (basket == null) return false;
+
+            basket.RemoveItem(productId, quantity);
+            return await SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteBasketAsync(string buyerId)
+        {
+            var basket = await RetrieveBasketAsync(buyerId);
+            if (basket == null) return false;
+
+            _dBContext.Baskets.Remove(basket);
+            return await SaveChangesAsync();
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _dBContext.SaveChangesAsync() > 0;
+        }
+
+        // Méthode pour récupérer le panier par buyerId
+        private async Task<Basket> RetrieveBasketAsync(string buyerId)
+        {
+            if (string.IsNullOrEmpty(buyerId))
+            {
+                return null; // Si l'identifiant de l'acheteur est vide, retourne null
+            }
+
+            return await _dBContext.Baskets
+                .Include(i => i.Items)
+                .ThenInclude(c => c.Creation)
+                .FirstOrDefaultAsync(x => x.BuyerId == buyerId);
+        }
     }
 }
