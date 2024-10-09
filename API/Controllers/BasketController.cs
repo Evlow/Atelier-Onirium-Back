@@ -1,41 +1,76 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using API.Business.DTO;
 using API.Business.ServicesContract;
-using API.Data;
-using API.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
-    [Route("[controller]")]
-    public class BasketController : BaseApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class BasketController : ControllerBase
     {
         private readonly IBasketServices _basketServices;
+
         public BasketController(IBasketServices basketServices)
         {
             _basketServices = basketServices;
         }
 
-    [HttpGet]
-    public async Task<ActionResult<Basket>> GetBasket()
-    {
-        var buyerId = Request.Cookies["BuyerId"];
-        if (string.IsNullOrEmpty(buyerId))
+        // Récupérer le panier via le service
+        [HttpGet("{buyerId}", Name = "GetBasket")]
+        public async Task<ActionResult<BasketDTO>> GetBasket(string buyerId)
         {
-            return NotFound("No BuyerId found in cookies");
+            var basket = await _basketServices.GetBasketAsync(buyerId);
+            
+            if (basket == null)
+                return NotFound(new ProblemDetails { Title = "Basket not found" });
+
+            return Ok(basket);
         }
 
-        var basket = await _basketServices.GetBasketAsync(buyerId);
-        if (basket == null)
+        // Ajouter un article au panier via le service
+        [HttpPost("{buyerId}/items/{productId}/{quantity}")]
+        public async Task<ActionResult<BasketDTO>> AddItemToBasket(string buyerId, int productId, int quantity)
         {
-            return NotFound("Basket not found");
+            var basket = await _basketServices.AddItemToBasketAsync(buyerId, productId, quantity);
+
+            if (basket == null)
+                return BadRequest(new ProblemDetails { Title = "Error adding item to basket" });
+
+            return CreatedAtRoute("GetBasket", new { buyerId = basket.BuyerId }, basket);
         }
 
-        return Ok(basket);
+        // Supprimer un article du panier via le service
+        [HttpDelete("{buyerId}/items/{productId}/{quantity}")]
+        public async Task<ActionResult> RemoveItemFromBasket(string buyerId, int productId, int quantity)
+        {
+            var result = await _basketServices.RemoveItemFromBasketAsync(buyerId, productId, quantity);
+
+            if (!result)
+                return BadRequest(new ProblemDetails { Title = "Error removing item from basket" });
+
+            return Ok();
+        }
+
+        // Créer un nouveau panier via le service
+        [HttpPost("{buyerId}")]
+        public async Task<ActionResult<BasketDTO>> CreateBasket(string buyerId)
+        {
+            var basket = await _basketServices.CreateBasketAsync(buyerId);
+
+            return CreatedAtRoute("GetBasket", new { buyerId = basket.BuyerId }, basket);
+        }
+
+        // Supprimer un panier via le service
+        [HttpDelete("{buyerId}")]
+        public async Task<ActionResult> DeleteBasket(string buyerId)
+        {
+            var result = await _basketServices.DeleteBasketAsync(buyerId);
+
+            if (!result)
+                return BadRequest(new ProblemDetails { Title = "Error deleting basket" });
+
+            return Ok();
+        }
     }
-}}
+}

@@ -8,9 +8,9 @@ namespace API.Business.DTO
 {
     public class BasketDTO
     {
-                public int Id { get; set; }
-        public string BuyerId {get;set;}
-                public List<BasketItems> Items {get;set;} = new();
+        public int Id { get; set; }
+        public string BuyerId { get; set; }
+        public List<BasketItemsDTO> Items { get; set; }
 
 
 

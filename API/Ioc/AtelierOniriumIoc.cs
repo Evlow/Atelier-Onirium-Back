@@ -26,6 +26,8 @@ namespace API.Ioc
             // Enregistre ICreationRepository avec une durée de vie Scoped,
             // ce qui signifie qu'une nouvelle instance de CreationRepository est créée pour chaque requête HTTP
             services.AddScoped<ICreationRepository, CreationRepository>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
+
 
             return services;
         }
@@ -37,6 +39,8 @@ namespace API.Ioc
             // - Enregistre ICreationServices avec son implémentation CreationServices
             //   Utilisation d'une durée de vie Scoped, pour que chaque requête HTTP ait une nouvelle instance
             services.AddScoped<ICreationServices, CreationServices>();
+            services.AddScoped<IBasketServices, BasketServices>();
+
 
             return services;
         }
