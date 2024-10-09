@@ -3,6 +3,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AtelierOniriumContext))]
-    partial class AtelierOniriumContextModelSnapshot : ModelSnapshot
+    [Migration("20241009131125_BasketEntityAdded")]
+    partial class BasketEntityAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +40,7 @@ namespace API.Migrations
                     b.ToTable("Baskets");
                 });
 
-            modelBuilder.Entity("API.Entities.BasketItems", b =>
+            modelBuilder.Entity("API.Entities.BasketItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,9 +97,9 @@ namespace API.Migrations
                     b.ToTable("Creations");
                 });
 
-            modelBuilder.Entity("API.Entities.BasketItems", b =>
+            modelBuilder.Entity("API.Entities.BasketItem", b =>
                 {
-                    b.HasOne("API.Entities.Basket", "Basket")
+                    b.HasOne("API.Entities.Basket", "basket")
                         .WithMany("Items")
                         .HasForeignKey("BasketId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -108,9 +111,9 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Basket");
-
                     b.Navigation("Creation");
+
+                    b.Navigation("basket");
                 });
 
             modelBuilder.Entity("API.Entities.Basket", b =>
