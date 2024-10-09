@@ -19,5 +19,7 @@ namespace API.Data
         /// Permet d'effectuer des opérations sur les créations stockées dans la table correspondante.
         /// </summary>
         DbSet<Creation> Creations { get; set; }
+                DbSet<Basket> Baskets { get; set; }
+
     }
 }

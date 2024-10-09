@@ -36,5 +36,7 @@ namespace API.Data
         /// Cette DbSet permet d'effectuer des opérations CRUD (Create, Read, Update, Delete) sur les entités de type "Creation".
         /// </summary>
         public DbSet<Creation> Creations { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
+
     }
 }
