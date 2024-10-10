@@ -9,6 +9,8 @@ namespace API.Business.DTO
     public class BasketItemsDTO
     {
         public int Id { get; set; }
+                public int CreationId { get; set; }
+
         public string Name { get; set; }
         public int Quantity { get; set; }
         public long Price { get; set; }
