@@ -49,7 +49,7 @@ namespace API.Controllers
             return BadRequest(new ProblemDetails { Title = "Problem saving item to basket" });
         }
 
-        [HttpDelete(Name = "DeleteItem/{creationId}/{quantity}")]
+        [HttpDelete("DeleteItem/{creationId}/{quantity}")]
         public async Task<ActionResult> RemoveBasketItem(int creationId, int quantity)
         {
             var basket = await RetrieveBasket(GetBuyerId());
