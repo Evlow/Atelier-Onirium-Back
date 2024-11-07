@@ -15,7 +15,7 @@ namespace API.Entities
 
         public void AddItem(Creation creation, int quantity)
         {
-            if (Items.All(item =>item.CreationId != Id))
+            if (Items.All(item =>item.CreationId != creation.Id))
             {
                 Items.Add(new BasketItems{Creation = creation, Quantity = quantity});
             }
