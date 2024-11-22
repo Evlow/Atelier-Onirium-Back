@@ -13,18 +13,23 @@ namespace API.Business.Services
         private readonly Cloudinary _cloudinary;
         private readonly ILogger<ImageService> _logger;
 
-        public ImageService(IOptions<CloudinarySettings> config, ILogger<ImageService> logger)
+   public ImageService(IOptions<CloudinarySettings> cloudinarySettings)
+    {
+        var settings = cloudinarySettings.Value;
+
+        // Assurez-vous que CloudName est bien défini
+        if (string.IsNullOrEmpty(settings.CloudName))
         {
-
-            var account = new Account(
-                config.Value.CloudName,
-                config.Value.ApiKey,
-                config.Value.ApiSecret
-            );
-
-            _cloudinary = new Cloudinary(account);
-
+            throw new ArgumentException("Le nom du cloud doit être spécifié dans l'Account!");
         }
+
+        // Initialisez Cloudinary avec les paramètres fournis
+        _cloudinary = new Cloudinary(new Account(
+            settings.CloudName, 
+            settings.ApiKey,     
+            settings.ApiSecret   
+        ));
+    }
 
         public async Task<ImageUploadResult> AddImageAsync(IFormFile file)
         {
