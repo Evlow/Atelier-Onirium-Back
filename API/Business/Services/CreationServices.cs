@@ -72,6 +72,32 @@ namespace API.Business.Services
 
             return creationGet != null;
         }
+public async Task<CreationDTO> UpdateCreationAsync(int creationId, CreationDTO creation)
+        {
+            var isExiste = await CheckCreationNameExisteAsync(creation.Name).ConfigureAwait(false);
+            if (isExiste)
+                throw new Exception("Il existe déjà une création avec ce nom.");
 
+            var creationGet = await _creationRepository.GetCreationByIdAsync(creationId).ConfigureAwait(false);
+            if (creationGet == null)
+                throw new Exception($"Il n'existe aucune création avec cet identifiant : {creationId}");
+
+            creationGet.Name = creation.Name;
+
+            var creationUpdated = await _creationRepository.UpdateCreationAsync(creationGet).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(creationUpdated);
+        }
+
+      public async Task<CreationDTO> DeleteCreationAsync(int creationId)
+        {
+            var creationGet = await _creationRepository.GetCreationByIdAsync(creationId).ConfigureAwait(false);
+            if (creationGet == null)
+                throw new Exception($"Il n'existe aucune unité de mesure avec cet identifiant : {creationId}");
+
+            var creationDeleted = await _creationRepository.DeleteCreationAsync(creationGet).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(creationDeleted);
+        }
     }
 }

@@ -57,5 +57,11 @@ namespace API.Data.Repository
 
             return creationUpdated.Entity;
         }
+           public async Task<Creation> DeleteCreationAsync(Creation creation)
+        {
+            var creationDeleted = _dBContext.Creations.Remove(creation);
+            await _dBContext.SaveChangesAsync().ConfigureAwait(false);
+            return creationDeleted.Entity;
+        }
     }
 }

@@ -9,11 +9,11 @@ namespace API.Controllers
 
     public class CreationController : BaseApiController
     {
-
-        private readonly ICreationServices _creationService;
-        public CreationController(ICreationServices creationService)
+        private readonly ImageService _imageService; private readonly ICreationServices _creationService;
+        public CreationController(ICreationServices creationService, ImageService imageService)
         {
             _creationService = creationService;
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -42,8 +42,7 @@ namespace API.Controllers
             return Ok(creation);
 
         }
-  [HttpPost]
-        // [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost]
         [ProducesResponseType(typeof(CreationDTO), 200)]
         public async Task<ActionResult> CreateCreationAsync([FromBody] CreationDTO creation)
         {
@@ -52,11 +51,50 @@ namespace API.Controllers
                 return Problem("Echec : Il manque le nom de la création.");
             }
 
+            if (creation.File != null)
+            {
+                var imageResult = await _imageService.AddImageAsync(creation.File);
+
+                if (imageResult.Error != null)
+                    return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
+
+
+                creation.PictureUrl = imageResult.SecureUrl.ToString();
+                // creation.Id = imageResult.PublicId;
+                creation.PublicId = imageResult.PublicId;
+
+            }
+
             try
             {
                 var creationAdded = await _creationService.CreateCreationAsync(creation).ConfigureAwait(false);
-
                 return Ok(creationAdded);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    Error = e.Message,
+                });
+            }
+        }
+
+
+        [HttpPut("{id}")]
+        // [Authorize(AuthenticationSchemes = "Bearer")]
+        [ProducesResponseType(typeof(CreationDTO), 200)]
+        public async Task<ActionResult> UpdateCreationAsync(int id, [FromBody] CreationDTO creation)
+        {
+            if (string.IsNullOrWhiteSpace(creation.Name))
+            {
+                return Problem("Echec : Il manque le nom de la création.");
+            }
+
+            try
+            {
+                var creationUpdated = await _creationService.UpdateCreationAsync(id, creation).ConfigureAwait(false);
+
+                return Ok(creationUpdated);
             }
             catch (Exception e)
             {
@@ -67,28 +105,48 @@ namespace API.Controllers
             }
 
         }
-        //  [HttpGet]
-        // [AllowAnonymous]
-        // [ProducesResponseType(typeof(CreationDTO), 200)]
-        // public async Task<ActionResult> CreationByName(string name)
-        // {
+        [HttpDelete("{id}")]
+        // [Authorize(AuthenticationSchemes = "Bearer")]
+        [ProducesResponseType(typeof(CreationDTO), 200)]
+        public async Task<ActionResult> DeleteCreationyAsync(int id)
+        {
+            try
+            {
+                var creationDeleted = await _creationService.DeleteCreationAsync(id).ConfigureAwait(false);
 
-        //     var creation = await _creationServices.GetCreationByNameAsync(name);
-
-        //     if (creation == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return Ok(creation);
-
-        // }
-
-
-
-
+                return Ok(creationDeleted);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new
+                {
+                    Error = e.Message,
+                });
+            }
 
 
+            //  [HttpGet]
+            // [AllowAnonymous]
+            // [ProducesResponseType(typeof(CreationDTO), 200)]
+            // public async Task<ActionResult> CreationByName(string name)
+            // {
+
+            //     var creation = await _creationServices.GetCreationByNameAsync(name);
+
+            //     if (creation == null)
+            //     {
+            //         return NotFound();
+            //     }
+
+            //     return Ok(creation);
+
+            // }
+
+
+
+
+
+        }
 
     };
 }

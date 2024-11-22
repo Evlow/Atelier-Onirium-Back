@@ -1,3 +1,4 @@
+using API.Business.Services;
 using API.Ioc;
 using API.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,13 @@ builder.Services.ConfigureDBContext(configuration);
 // Dependency Injection
 builder.Services.ConfigureInjectionDependencyRepository();
 builder.Services.ConfigureInjectionDependencyService();
+
+builder.Services.Configure<CloudinarySettings>(options =>
+{
+    options.CloudName = builder.Configuration["CLOUDINARY_CLOUD_NAME"];
+    options.ApiKey = builder.Configuration["CLOUDINARY_API_KEY"];
+    options.ApiSecret = builder.Configuration["CLOUDINARY_API_SECRET"];
+});
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
