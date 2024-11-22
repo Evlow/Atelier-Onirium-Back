@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Business.DTO;
 using API.Business.ServicesContract;
 using API.Data.RepositoryContract;
+using API.Entities;
 using AutoMapper;
 
 namespace API.Business.Services
@@ -50,6 +51,26 @@ namespace API.Business.Services
             var creationGet = await _creationRepository.GetCreationByNameAsync(name).ConfigureAwait(false);
             return _mapper.Map<CreationDTO>(creationGet);
 
+        }
+        
+        public async Task<CreationDTO> CreateCreationAsync(CreationDTO creation)
+        {
+            var isExiste = await CheckCreationNameExisteAsync(creation.Name).ConfigureAwait(false);
+            if (isExiste)
+                throw new Exception("Il existe déjà une création avec le même nom.");
+
+            var creationToAdd = _mapper.Map<Creation>(creation);
+
+            var creationAdded = await _creationRepository.CreateCreationAsync(creationToAdd).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(creationAdded);
+        }
+
+             private async Task<bool> CheckCreationNameExisteAsync(string creationName)
+        {
+            var creationGet = await _creationRepository.GetCreationByNameAsync(creationName).ConfigureAwait(false);
+
+            return creationGet != null;
         }
 
     }
