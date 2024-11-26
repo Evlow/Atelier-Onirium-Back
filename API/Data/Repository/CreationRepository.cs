@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Business.DTO;
 using API.Data.RepositoryContract;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,28 @@ namespace API.Data.Repository
 
             return await _dBContext.Creations.FirstOrDefaultAsync(creation => creation.Name == name);
 
+        }
+        
+        public async Task<Creation> CreateCreationAsync(Creation creation)
+        {
+            var creationAdded = await _dBContext.Creations.AddAsync(creation).ConfigureAwait(false);
+            await _dBContext.SaveChangesAsync().ConfigureAwait(false);
+            return creationAdded.Entity;
+        }
+
+        public async Task<Creation> UpdateCreationAsync (Creation creation)
+    {
+            var creationUpdated = _dBContext.Creations.Update(creation);
+
+            await _dBContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return creationUpdated.Entity;
+        }
+           public async Task<Creation> DeleteCreationAsync(Creation creation)
+        {
+            var creationDeleted = _dBContext.Creations.Remove(creation);
+            await _dBContext.SaveChangesAsync().ConfigureAwait(false);
+            return creationDeleted.Entity;
         }
     }
 }

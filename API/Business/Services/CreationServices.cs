@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Business.DTO;
 using API.Business.ServicesContract;
 using API.Data.RepositoryContract;
+using API.Entities;
 using AutoMapper;
 
 namespace API.Business.Services
@@ -51,6 +52,52 @@ namespace API.Business.Services
             return _mapper.Map<CreationDTO>(creationGet);
 
         }
+        
+        public async Task<CreationDTO> CreateCreationAsync(CreationDTO creation)
+        {
+            var isExiste = await CheckCreationNameExisteAsync(creation.Name).ConfigureAwait(false);
+            if (isExiste)
+                throw new Exception("Il existe déjà une création avec le même nom.");
 
+            var creationToAdd = _mapper.Map<Creation>(creation);
+
+            var creationAdded = await _creationRepository.CreateCreationAsync(creationToAdd).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(creationAdded);
+        }
+
+             private async Task<bool> CheckCreationNameExisteAsync(string creationName)
+        {
+            var creationGet = await _creationRepository.GetCreationByNameAsync(creationName).ConfigureAwait(false);
+
+            return creationGet != null;
+        }
+public async Task<CreationDTO> UpdateCreationAsync(int creationId, CreationDTO creation)
+        {
+            var isExiste = await CheckCreationNameExisteAsync(creation.Name).ConfigureAwait(false);
+            if (isExiste)
+                throw new Exception("Il existe déjà une création avec ce nom.");
+
+            var creationGet = await _creationRepository.GetCreationByIdAsync(creationId).ConfigureAwait(false);
+            if (creationGet == null)
+                throw new Exception($"Il n'existe aucune création avec cet identifiant : {creationId}");
+
+            creationGet.Name = creation.Name;
+
+            var creationUpdated = await _creationRepository.UpdateCreationAsync(creationGet).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(creationUpdated);
+        }
+
+      public async Task<CreationDTO> DeleteCreationAsync(int creationId)
+        {
+            var creationGet = await _creationRepository.GetCreationByIdAsync(creationId).ConfigureAwait(false);
+            if (creationGet == null)
+                throw new Exception($"Il n'existe aucune unité de mesure avec cet identifiant : {creationId}");
+
+            var creationDeleted = await _creationRepository.DeleteCreationAsync(creationGet).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(creationDeleted);
+        }
     }
 }
