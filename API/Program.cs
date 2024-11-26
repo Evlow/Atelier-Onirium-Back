@@ -15,18 +15,19 @@ builder.Services.ConfigureDBContext(configuration);
 builder.Services.ConfigureInjectionDependencyRepository();
 builder.Services.ConfigureInjectionDependencyService();
 
+// Configure Cloudinary settings
+
 // builder.Services.Configure<CloudinarySettings>(options =>
 // {
 //     options.CloudName = builder.Configuration["CloudName"];
 //     options.ApiKey = builder.Configuration["ApiKey"];
 //     options.ApiSecret = builder.Configuration["ApiSecret"];
 // });
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
-// Configure Cloudinary settings
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
 // Ajoutez le service ImageService
-builder.Services.AddSingleton<ImageService>();// Add AutoMapper
+builder.Services.AddSingleton<ImageService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 // Add Controllers

@@ -8,53 +8,57 @@ using Microsoft.Extensions.Options;
 
 namespace API.Business.Services
 {
-   public class ImageService
-    {
-        private readonly Cloudinary _cloudinary;
-        private readonly ILogger<ImageService> _logger;
+      
+public class ImageService
+{
+    private readonly Cloudinary _cloudinary;
+    private readonly ILogger<ImageService> _logger;
 
-   public ImageService(IOptions<CloudinarySettings> cloudinarySettings)
+    public ImageService(IOptions<CloudinarySettings> config, ILogger<ImageService> logger)
     {
-        var settings = cloudinarySettings.Value;
-
-        // Assurez-vous que CloudName est bien défini
-        if (string.IsNullOrEmpty(settings.CloudName))
+        if (config == null || string.IsNullOrEmpty(config.Value.CloudName))
         {
-            throw new ArgumentException("Le nom du cloud doit être spécifié dans l'Account!");
+            throw new ArgumentException("Cloudinary configuration is invalid or missing.");
         }
 
-        // Initialisez Cloudinary avec les paramètres fournis
-        _cloudinary = new Cloudinary(new Account(
-            settings.CloudName, 
-            settings.ApiKey,     
-            settings.ApiSecret   
-        ));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _logger.LogInformation("Cloudinary Configuration: CloudName={CloudName}, ApiKey={ApiKey}",
+            config.Value.CloudName, config.Value.ApiKey);
+
+        var account = new Account(
+            config.Value.CloudName,
+            config.Value.ApiKey,
+            config.Value.ApiSecret
+        );
+
+        _cloudinary = new Cloudinary(account);
     }
 
-        public async Task<ImageUploadResult> AddImageAsync(IFormFile file)
-        {
-            var uploadResult = new ImageUploadResult();
+    public async Task<ImageUploadResult> AddImageAsync(IFormFile file)
+    {
+        var uploadResult = new ImageUploadResult();
 
-            if (file.Length > 0)
+        if (file.Length > 0)
+        {
+            using var stream = file.OpenReadStream();
+            var uploadParams = new ImageUploadParams
             {
-                using var stream = file.OpenReadStream();
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(file.FileName, stream)
-                };
-                uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            }
-
-            return uploadResult;
+                File = new FileDescription(file.FileName, stream)
+            };
+            uploadResult = await _cloudinary.UploadAsync(uploadParams);
         }
 
-        public async Task<DeletionResult> DeleteImageAsync(string publicId)
-        {
-            var deleteParams = new DeletionParams(publicId);
+        return uploadResult;
+    }
 
-            var result = await _cloudinary.DestroyAsync(deleteParams);
+    public async Task<DeletionResult> DeleteImageAsync(string publicId)
+    {
+        var deleteParams = new DeletionParams(publicId);
 
-            return result;
-        }
+        var result = await _cloudinary.DestroyAsync(deleteParams);
+
+        return result;
     }
 }
+
+    }

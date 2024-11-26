@@ -44,7 +44,7 @@ namespace API.Controllers
         }
         [HttpPost]
         [ProducesResponseType(typeof(CreationDTO), 200)]
-        public async Task<ActionResult> CreateCreationAsync([FromBody] CreationDTO creation)
+        public async Task<ActionResult> CreateCreationAsync([FromForm] CreationDTO creation)
         {
             if (string.IsNullOrWhiteSpace(creation.Name))
             {
