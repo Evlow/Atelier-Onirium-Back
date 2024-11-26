@@ -1,3 +1,4 @@
+using API.Business.Services;
 using API.Ioc;
 using API.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +15,19 @@ builder.Services.ConfigureDBContext(configuration);
 builder.Services.ConfigureInjectionDependencyRepository();
 builder.Services.ConfigureInjectionDependencyService();
 
-// Add AutoMapper
+// Configure Cloudinary settings
+
+// builder.Services.Configure<CloudinarySettings>(options =>
+// {
+//     options.CloudName = builder.Configuration["CloudName"];
+//     options.ApiKey = builder.Configuration["ApiKey"];
+//     options.ApiSecret = builder.Configuration["ApiSecret"];
+// });
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
+
+// Ajoutez le service ImageService
+builder.Services.AddSingleton<ImageService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 // Add Controllers

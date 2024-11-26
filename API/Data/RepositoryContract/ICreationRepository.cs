@@ -13,5 +13,8 @@ namespace API.Data.RepositoryContract
         Task<List<Creation>> GetCreationsAsync();
         Task<Creation> GetCreationByIdAsync(int id);
         Task<Creation> GetCreationByNameAsync(string name);
+        Task<Creation> CreateCreationAsync(Creation creation);
+        Task<Creation> UpdateCreationAsync (Creation creation);
+        Task<Creation> DeleteCreationAsync(Creation creation);
     }
 }

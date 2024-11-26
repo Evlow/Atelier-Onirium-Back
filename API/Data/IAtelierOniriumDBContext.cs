@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Api.Evlow_Foodies.Datas.Context.Contract;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace API.Data
     /// Elle permet de définir les DbSet d'entités sans exposer directement l'implémentation du contexte.
     /// Cette interface facilite l'injection de dépendances et le remplacement du contexte en fonction des besoins.
     /// </summary>
-    public interface IAtelierOniriumDBContext
+    public interface IAtelierOniriumDBContext : IDbContext
     {
         /// <summary>
         /// Représente la collection d'entités "Creation" dans la base de données.
