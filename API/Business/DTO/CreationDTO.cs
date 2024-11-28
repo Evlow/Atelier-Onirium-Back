@@ -9,6 +9,7 @@ namespace API.Business.DTO
     // Utilisé pour transférer les données entre les couches de l'application sans exposer les entités de la base de données directemen
     public class CreationDTO
     {
+    public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string PictureUrl { get; set; }
