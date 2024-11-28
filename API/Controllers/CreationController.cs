@@ -83,7 +83,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         // [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(CreationDTO), 200)]
-        public async Task<ActionResult> UpdateCreationAsync(int id, [FromBody] CreationDTO creation)
+        public async Task<ActionResult> UpdateCreationAsync(int id, [FromForm] CreationDTO creation)
         {
             if (string.IsNullOrWhiteSpace(creation.Name))
             {
