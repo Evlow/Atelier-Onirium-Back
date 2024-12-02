@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AtelierOniriumContext))]
-    partial class AtelierOniriumContextModelSnapshot : ModelSnapshot
+    [Migration("20241202121305_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,13 +206,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3399d39c-dca6-4153-9135-8deae757edc6",
+                            Id = "42672b46-fe01-424d-995d-cba9f52187cf",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "1031aed3-170e-4237-84a4-654bcd542f20",
+                            Id = "f11a76a3-93d4-41a7-b7b2-f7090f25b641",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
