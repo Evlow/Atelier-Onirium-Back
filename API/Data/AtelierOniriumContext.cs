@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -11,33 +15,52 @@ namespace API.Data
     /// Contexte de base de données spécifique à l'application Atelier Onirium. 
     /// Il hérite de DbContext et intègre une interface IAtelierOniriumDBContext pour permettre une injection de dépendance.
     /// </summary>
-    public class AtelierOniriumContext : DbContext, IAtelierOniriumDBContext
+public class AtelierOniriumContext : IdentityDbContext<User>, IAtelierOniriumDBContext
+{
+    public AtelierOniriumContext(DbContextOptions<AtelierOniriumContext> options)
+        : base(options)
     {
-        /// <summary>
-        /// Constructeur par défaut requis pour certaines utilisations, 
-        /// comme les tests unitaires ou l'injection de dépendances.
-        /// </summary>
-        public AtelierOniriumContext()
-        { }
+    }
 
-        /// <summary>
-        /// Constructeur prenant des options de configuration pour le contexte. 
-        /// Appelle le constructeur de la classe de base DbContext avec les options fournies.
-        /// </summary>
-        /// <param name="options">Options spécifiques pour configurer le contexte de base de données, 
-        /// telles que la chaîne de connexion et les paramètres du fournisseur de base de données.</param>
-        public AtelierOniriumContext(DbContextOptions<AtelierOniriumContext> options)
-            : base(options)
+    public DbSet<Creation> Creations { get; set; }
+    public DbSet<Basket> Baskets { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        // Applique la longueur maximale de 191 caractères à toutes les colonnes de type string
+        foreach (var entityType in builder.Model.GetEntityTypes())
         {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(string))
+                {
+                    property.SetMaxLength(191);
+                }
+            }
         }
 
-        /// <summary>
-        /// Propriété représentant la table "Creations" dans la base de données. 
-        /// Cette DbSet permet d'effectuer des opérations CRUD (Create, Read, Update, Delete) sur les entités de type "Creation".
-        /// </summary>
-        public DbSet<Creation> Creations { get; set; }
-        public DbSet<Basket> Baskets { get; set; }
+        builder.Entity<IdentityUser>(entity =>
+        {
+            entity.Property(e => e.Id).HasMaxLength(128);  
+            entity.Property(e => e.UserName).HasMaxLength(191);  
+            entity.Property(e => e.NormalizedUserName).HasMaxLength(191);  
+            entity.Property(e => e.Email).HasMaxLength(191);  
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(191);  
+        });
 
-        
+        builder.Entity<IdentityRole>(entity =>
+        {
+            entity.Property(e => e.Id).HasMaxLength(128);  
+            entity.Property(e => e.Name).HasMaxLength(191);  
+            entity.Property(e => e.NormalizedName).HasMaxLength(191);  
+        });
+
+        builder.Entity<IdentityRole>()
+            .HasData(
+                new IdentityRole {  Name = "Member", NormalizedName = "MEMBER" },
+                new IdentityRole {  Name = "Admin", NormalizedName = "ADMIN" }
+            );
     }
-}
+}}
