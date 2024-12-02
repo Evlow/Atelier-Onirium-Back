@@ -1,8 +1,14 @@
+using System.Text;
 using API.Business.Services;
+using API.Data;
+using API.Entities;
 using API.Ioc;
 using API.Middleware;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Logging;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +23,6 @@ builder.Services.ConfigureInjectionDependencyService();
 
 // Configure Cloudinary settings
 
-// builder.Services.Configure<CloudinarySettings>(options =>
-// {
-//     options.CloudName = builder.Configuration["CloudName"];
-//     options.ApiKey = builder.Configuration["ApiKey"];
-//     options.ApiSecret = builder.Configuration["ApiSecret"];
-// });
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 
@@ -35,7 +35,53 @@ builder.Services.AddControllers();
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Jwt auth header",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+
+builder.Services.AddIdentityCore<User>()
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<AtelierOniriumContext>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+               .AddJwtBearer(opt =>
+               {
+                   opt.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateIssuer = false,
+                       ValidateAudience = false,
+                       ValidateLifetime = true,
+                       ValidateIssuerSigningKey = true,
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                           .GetBytes(builder.Configuration["JWTSettings:TokenKey"]))
+                   };
+               }); builder.Services.AddAuthorization();
+builder.Services.AddScoped<TokenService>();
+
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -63,7 +109,9 @@ app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(
+        c => {c.ConfigObject.AdditionalItems.Add("persistAuthorized", "true");}
+    );
 }
 
 // Enable CORS
@@ -72,11 +120,15 @@ app.UseCors("_myAllowSpecificOrigins");
 // Use HTTPS redirection
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 // Use Authorization
 app.UseAuthorization();
 
 // Map Controllers
 app.MapControllers();
 
+var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<AtelierOniriumContext>();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 // Run the application
 app.Run();
