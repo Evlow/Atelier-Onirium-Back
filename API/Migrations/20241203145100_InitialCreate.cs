@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,13 +21,13 @@ namespace API.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: false)
+                    Id = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Name = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedName = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    NormalizedName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ConcurrencyStamp = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -40,24 +40,24 @@ namespace API.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    Id = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    UserName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedUserName = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    NormalizedUserName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Email = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedEmail = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    NormalizedEmail = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    PasswordHash = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SecurityStamp = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    SecurityStamp = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ConcurrencyStamp = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    PhoneNumber = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -77,7 +77,7 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BuyerId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    BuyerId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -92,17 +92,17 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Name = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Description = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PictureUrl = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    PictureUrl = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Category = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Category = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    PublicId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    PublicId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -115,15 +115,15 @@ namespace API.Migrations
                 name: "IdentityUser",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: false)
+                    Id = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    UserName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedUserName = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    NormalizedUserName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Email = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedEmail = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    NormalizedEmail = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     PasswordHash = table.Column<string>(type: "longtext", nullable: true)
@@ -152,11 +152,11 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    RoleId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimType = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ClaimType = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimValue = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ClaimValue = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -177,11 +177,11 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    UserId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimType = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ClaimType = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimValue = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ClaimValue = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -200,13 +200,13 @@ namespace API.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    LoginProvider = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ProviderKey = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    ProviderKey = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ProviderDisplayName = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    ProviderDisplayName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    UserId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -225,9 +225,9 @@ namespace API.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    UserId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RoleId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    RoleId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -252,13 +252,13 @@ namespace API.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    UserId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    LoginProvider = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    LoginProvider = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: false)
+                    Name = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Value = table.Column<string>(type: "varchar(191)", maxLength: 191, nullable: true)
+                    Value = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -306,8 +306,8 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "42672b46-fe01-424d-995d-cba9f52187cf", null, "Member", "MEMBER" },
-                    { "f11a76a3-93d4-41a7-b7b2-f7090f25b641", null, "Admin", "ADMIN" }
+                    { "49fbd410-34ec-4cf4-8455-937af0d3754c", null, "Admin", "ADMIN" },
+                    { "69380bf7-20ef-484f-a4b5-322bd7b84ab2", null, "Member", "MEMBER" }
                 });
 
             migrationBuilder.CreateIndex(
