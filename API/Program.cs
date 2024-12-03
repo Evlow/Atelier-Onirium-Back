@@ -64,7 +64,8 @@ builder.Services.AddSwaggerGen(c =>
                 });
             });
 
-builder.Services.AddIdentityCore<User>()
+builder.Services.AddIdentityCore<User>(opt=>
+{opt.User.RequireUniqueEmail = true;})
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AtelierOniriumContext>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
