@@ -95,6 +95,7 @@ builder.Services.AddCors(options =>
 });
 
 // Add Logging
+builder.Logging.AddConsole();
 builder.Services.AddLogging(logging =>
 {
     logging.ClearProviders(); // Clear default logging providers
