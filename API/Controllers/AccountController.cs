@@ -26,7 +26,6 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(RegisterDTO registerDTO)
         {
-            _logger.LogInformation("Attempting to register user with username: {UserName}", registerDTO.UserName); // Log d'information
 
             var user = new User { UserName = registerDTO.UserName, Email = registerDTO.Email };
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
@@ -36,7 +35,6 @@ namespace API.Controllers
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(error.Code, error.Description);
-                    _logger.LogError("Registration failed for username: {UserName}, Error: {Error}", registerDTO.UserName, error.Description); // Log d'erreur
                 }
 
                 return ValidationProblem();
@@ -44,7 +42,6 @@ namespace API.Controllers
 
             await _userManager.AddToRoleAsync(user, "Member");
 
-            _logger.LogInformation("User {UserName} successfully registered", registerDTO.UserName); // Log d'information
             return StatusCode(201);
         }
 
@@ -52,22 +49,17 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
-            _logger.LogInformation("Attempting login for user: {UserName}", loginDTO.UserName); // Log d'information
 
             var user = await _userManager.FindByNameAsync(loginDTO.UserName);
             if (user == null)
             {
-                _logger.LogWarning("User not found for login attempt: {UserName}", loginDTO.UserName); // Log d'avertissement
                 return Unauthorized();
             }
 
             if (!await _userManager.CheckPasswordAsync(user, loginDTO.Password))
             {
-                _logger.LogWarning("Invalid password for user: {UserName}", loginDTO.UserName); // Log d'avertissement
                 return Unauthorized();
             }
-
-            _logger.LogInformation("User {UserName} successfully logged in", loginDTO.UserName); // Log d'information
 
             return new UserDTO
             {
