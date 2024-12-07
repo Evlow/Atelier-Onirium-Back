@@ -70,7 +70,6 @@ namespace API.Controllers
 
         // Méthode pour obtenir l'utilisateur actuel (authentifié)
         [Authorize]
-        [Authorize]
         [HttpGet("currentUser")]
         public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
