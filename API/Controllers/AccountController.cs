@@ -48,8 +48,7 @@ namespace API.Controllers
         // Méthode pour la connexion de l'utilisateur
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
-        {
-
+       {
             var user = await _userManager.FindByNameAsync(loginDTO.UserName);
             if (user == null)
             {
@@ -80,6 +79,7 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 Token = await _tokenService.GenerateToken(user),
+                UserName = user.UserName
             };
         }
     }
