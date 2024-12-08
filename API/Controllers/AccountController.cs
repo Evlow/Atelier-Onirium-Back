@@ -79,6 +79,7 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 Token = await _tokenService.GenerateToken(user),
+                UserName = user.UserName
             };
         }
     }
