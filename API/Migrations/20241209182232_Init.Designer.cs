@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AtelierOniriumContext))]
-    [Migration("20241203145100_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241209182232_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,23 +81,23 @@ namespace API.Migrations
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(70)
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("PictureUrl")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
 
                     b.Property<string>("PublicId")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("QuantityInStock")
                         .HasColumnType("int");
@@ -143,8 +143,8 @@ namespace API.Migrations
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(70)
@@ -206,13 +206,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "69380bf7-20ef-484f-a4b5-322bd7b84ab2",
+                            Id = "63316bad-284a-4b9b-8fd8-d34952859da9",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "49fbd410-34ec-4cf4-8455-937af0d3754c",
+                            Id = "52c175f4-013d-4662-8e0e-ab783536dcc0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -244,63 +244,6 @@ namespace API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>

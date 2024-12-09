@@ -46,50 +46,41 @@ namespace API.Business.Services
             return _mapper.Map<CreationDTO>(creationGet);
 
         }
-         public async Task<CreationDTO> GetCreationByNameAsync(string name)
-        {
-            var creationGet = await _creationRepository.GetCreationByNameAsync(name).ConfigureAwait(false);
-            return _mapper.Map<CreationDTO>(creationGet);
 
-        }
-        
-        public async Task<CreationDTO> CreateCreationAsync(CreationDTO creation)
+
+        public async Task<CreationDTO> CreateCreationAsync(CreationDTO creationDTO)
         {
-            var isExiste = await CheckCreationNameExisteAsync(creation.Name).ConfigureAwait(false);
+            var isExiste = await CheckCreationNameExisteAsync(creationDTO.Name).ConfigureAwait(false);
             if (isExiste)
                 throw new Exception("Il existe déjà une création avec le même nom.");
 
-            var creationToAdd = _mapper.Map<Creation>(creation);
+            var creationToAdd = _mapper.Map<Creation>(creationDTO);
 
             var creationAdded = await _creationRepository.CreateCreationAsync(creationToAdd).ConfigureAwait(false);
 
             return _mapper.Map<CreationDTO>(creationAdded);
         }
-
-             private async Task<bool> CheckCreationNameExisteAsync(string creationName)
+        public async Task<CreationDTO> UpdateCreationAsync(CreationDTO creation)
         {
-            var creationGet = await _creationRepository.GetCreationByNameAsync(creationName).ConfigureAwait(false);
 
-            return creationGet != null;
-        }
-public async Task<CreationDTO> UpdateCreationAsync(int creationId, CreationDTO creation)
-        {
-            var isExiste = await CheckCreationNameExisteAsync(creation.Name).ConfigureAwait(false);
-            if (isExiste)
-                throw new Exception("Il existe déjà une création avec ce nom.");
 
-            var creationGet = await _creationRepository.GetCreationByIdAsync(creationId).ConfigureAwait(false);
-            if (creationGet == null)
-                throw new Exception($"Il n'existe aucune création avec cet identifiant : {creationId}");
+            var CreationGet = await _creationRepository.GetCreationByIdAsync(creation.Id).ConfigureAwait(false);
+            if (CreationGet == null)
+                throw new Exception($"Il n'existe aucune recette avec cet identifiant : {creation.Id}");
 
-            creationGet.Name = creation.Name;
+            CreationGet.Name = creation.Name;
+            CreationGet.Description = creation.Description;
+                        CreationGet.PictureUrl = creation.PictureUrl;
 
-            var creationUpdated = await _creationRepository.UpdateCreationAsync(creationGet).ConfigureAwait(false);
 
-            return _mapper.Map<CreationDTO>(creationUpdated);
+            var CreationUpdated = await _creationRepository.UpdateCreationAsync(CreationGet).ConfigureAwait(false);
+
+            return _mapper.Map<CreationDTO>(CreationUpdated);
         }
 
-      public async Task<CreationDTO> DeleteCreationAsync(int creationId)
+
+
+        public async Task<CreationDTO> DeleteCreationAsync(int creationId)
         {
             var creationGet = await _creationRepository.GetCreationByIdAsync(creationId).ConfigureAwait(false);
             if (creationGet == null)
@@ -98,6 +89,18 @@ public async Task<CreationDTO> UpdateCreationAsync(int creationId, CreationDTO c
             var creationDeleted = await _creationRepository.DeleteCreationAsync(creationGet).ConfigureAwait(false);
 
             return _mapper.Map<CreationDTO>(creationDeleted);
+        }
+        private async Task<bool> CheckCreationNameExisteAsync(string creationName)
+        {
+            var creationGet = await _creationRepository.GetCreationByNameAsync(creationName).ConfigureAwait(false);
+
+            return creationGet != null;
+        }
+        public async Task<CreationDTO> GetCreationByNameAsync(string name)
+        {
+            var creationGet = await _creationRepository.GetCreationByNameAsync(name).ConfigureAwait(false);
+            return _mapper.Map<CreationDTO>(creationGet);
+
         }
     }
 }

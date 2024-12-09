@@ -1,6 +1,9 @@
 using API.Business.DTO;
 using API.Business.Services;
 using API.Business.ServicesContract;
+using API.Data;
+using API.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +12,17 @@ namespace API.Controllers
 
     public class CreationController : BaseApiController
     {
-        private readonly ImageService _imageService; private readonly ICreationServices _creationService;
-        public CreationController(ICreationServices creationService, ImageService imageService)
+        private readonly AtelierOniriumContext _context;
+        private readonly ImageService _imageService;
+        private readonly ICreationServices _creationService;
+        private readonly IMapper _mapper;
+        public CreationController(ICreationServices creationService, ImageService imageService, IMapper mapper, AtelierOniriumContext context)
         {
+            _mapper = mapper;
             _creationService = creationService;
             _imageService = imageService;
+            _context = context;
+
         }
 
         [HttpGet]
@@ -43,13 +52,9 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        [ProducesResponseType(typeof(CreationDTO), 200)]
-        public async Task<ActionResult> CreateCreationAsync([FromForm] CreationDTO creation)
+        public async Task<ActionResult> CreateCreationAsync([FromForm] CreationDTO creationDTO)
         {
-            if (string.IsNullOrWhiteSpace(creation.Name))
-            {
-                return Problem("Echec : Il manque le nom de la création.");
-            }
+            var creation = _mapper.Map<CreationDTO>(creationDTO);
 
             if (creation.File != null)
             {
@@ -60,7 +65,6 @@ namespace API.Controllers
 
 
                 creation.PictureUrl = imageResult.SecureUrl.ToString();
-                // creation.Id = imageResult.PublicId;
                 creation.PublicId = imageResult.PublicId;
 
             }
@@ -81,33 +85,61 @@ namespace API.Controllers
 
 
         [HttpPut("{id}")]
-        // [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(CreationDTO), 200)]
-        public async Task<ActionResult> UpdateCreationAsync(int id, [FromForm] CreationDTO creation)
+
+        // [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UpdateCreationAsync([FromForm] CreationDTO creationDTO)
         {
-            if (string.IsNullOrWhiteSpace(creation.Name))
+            // Récupérer la création existante
+            var creation = await _creationService.GetCreationByIdAsync(creationDTO.Id).ConfigureAwait(false);
+
+            if (creation == null)
+                return NotFound(new ProblemDetails { Title = "La création spécifiée n'existe pas." });
+
+            // Mettre à jour les propriétés via le mapper
+            _mapper.Map(creationDTO, creation);
+            creation.Name = creationDTO.Name;  
+            creation.Description = creationDTO.Description;
+            creation.PictureUrl = creationDTO.PictureUrl;   
+            creation.PublicId = creationDTO.PublicId;   
+            
+            // Vérifier s'il y a un fichier image
+            if (creationDTO.File != null)
             {
-                return Problem("Echec : Il manque le nom de la création.");
+                var imageResult = await _imageService.AddImageAsync(creationDTO.File).ConfigureAwait(false);
+
+                if (imageResult.Error != null)
+                    return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
+
+                // Supprimer l'ancienne image si elle existe
+                if (!string.IsNullOrEmpty(creation.PublicId))
+                {
+                    await _imageService.DeleteImageAsync(creation.PublicId).ConfigureAwait(false);
+                }
+
+                // Mettre à jour les détails de l'image
+                creation.PictureUrl = imageResult.SecureUrl.ToString();
+                creation.PublicId = imageResult.PublicId;
             }
 
             try
             {
-                var creationUpdated = await _creationService.UpdateCreationAsync(id, creation).ConfigureAwait(false);
+                // Sauvegarder les modifications dans la base de données via le service
+                var updatedCreation = await _creationService.UpdateCreationAsync( creation).ConfigureAwait(false);
 
-                return Ok(creationUpdated);
+                // Retourner la création mise à jour
+                return Ok(updatedCreation);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    Error = e.Message,
-                });
+                // Gestion des exceptions et retour d'une erreur 500
+                return StatusCode(500, new ProblemDetails { Title = "Une erreur est survenue lors de la mise à jour.", Detail = ex.Message });
             }
-
         }
+
+
+
         [HttpDelete("{id}")]
-        // [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(CreationDTO), 200)]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteCreationyAsync(int id)
         {
             try
@@ -123,26 +155,6 @@ namespace API.Controllers
                     Error = e.Message,
                 });
             }
-
-
-            //  [HttpGet]
-            // [AllowAnonymous]
-            // [ProducesResponseType(typeof(CreationDTO), 200)]
-            // public async Task<ActionResult> CreationByName(string name)
-            // {
-
-            //     var creation = await _creationServices.GetCreationByNameAsync(name);
-
-            //     if (creation == null)
-            //     {
-            //         return NotFound();
-            //     }
-
-            //     return Ok(creation);
-
-            // }
-
-
 
 
 
