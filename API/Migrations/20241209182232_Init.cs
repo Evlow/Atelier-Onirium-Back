@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,7 +51,7 @@ namespace API.Migrations
                     NormalizedEmail = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
+                    PasswordHash = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SecurityStamp = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -94,55 +94,20 @@ namespace API.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
+                    Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PictureUrl = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
+                    PictureUrl = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Category = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    PublicId = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
+                    PublicId = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Creations", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "IdentityUser",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedUserName = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedEmail = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    SecurityStamp = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_IdentityUser", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -306,8 +271,8 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "49fbd410-34ec-4cf4-8455-937af0d3754c", null, "Admin", "ADMIN" },
-                    { "69380bf7-20ef-484f-a4b5-322bd7b84ab2", null, "Member", "MEMBER" }
+                    { "52c175f4-013d-4662-8e0e-ab783536dcc0", null, "Admin", "ADMIN" },
+                    { "63316bad-284a-4b9b-8fd8-d34952859da9", null, "Member", "MEMBER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -378,9 +343,6 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "BasketItems");
-
-            migrationBuilder.DropTable(
-                name: "IdentityUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
