@@ -52,6 +52,8 @@ namespace API.Controllers
 
         }
         [HttpPost]
+                [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> CreateCreationAsync([FromForm] CreationDTO creationDTO)
         {
             var creation = _mapper.Map<CreationDTO>(creationDTO);
@@ -84,9 +86,8 @@ namespace API.Controllers
         }
 
 
-        [HttpPut("{id}")]
-
-        // [Authorize(Roles = "Admin")]
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateCreationAsync([FromForm] CreationDTO creationDTO)
         {
             // Récupérer la création existante
@@ -139,14 +140,15 @@ namespace API.Controllers
 
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteCreationyAsync(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteCreationAsync(int id)
         {
             try
             {
                 var creationDeleted = await _creationService.DeleteCreationAsync(id).ConfigureAwait(false);
 
                 return Ok(creationDeleted);
+                
             }
             catch (Exception e)
             {
