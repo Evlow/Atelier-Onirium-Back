@@ -76,16 +76,17 @@ protected override void OnModelCreating(ModelBuilder builder)
     });
 
     // Configuration spécifique pour la table Creation
-    builder.Entity<Creation>(entity =>
-    {
-        entity.Property(e => e.Description)
-            .HasMaxLength(500); // Augmenter la longueur de Description
+ builder.Entity<Creation>(entity =>
+{
+    entity.Property(e => e.Description)
+        .HasColumnType("TEXT");  // Utilisation de TEXT pour MySQL
 
-        entity.Property(e => e.PublicId)
-            .HasMaxLength(150); // Augmenter la longueur de PublicId
-             entity.Property(e => e.PictureUrl)
-            .HasMaxLength(150); // Augmenter la longueur de PublicId
-    });
+    entity.Property(e => e.PublicId)
+        .HasMaxLength(150);
+
+    entity.Property(e => e.PictureUrl)
+        .HasMaxLength(150); 
+});
     
 
     // Ajout des rôles de base

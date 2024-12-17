@@ -94,7 +94,7 @@ namespace API.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
+                    Description = table.Column<string>(type: "TEXT", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PictureUrl = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -271,8 +271,8 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "52c175f4-013d-4662-8e0e-ab783536dcc0", null, "Admin", "ADMIN" },
-                    { "63316bad-284a-4b9b-8fd8-d34952859da9", null, "Member", "MEMBER" }
+                    { "614927f7-b8b7-4406-9e9c-13fef1d87c24", null, "Member", "MEMBER" },
+                    { "70e149fb-b00a-4ff9-9049-66808893b363", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

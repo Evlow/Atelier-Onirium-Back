@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AtelierOniriumContext))]
-    [Migration("20241209182232_Init")]
+    [Migration("20241217142543_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -81,8 +81,8 @@ namespace API.Migrations
                         .HasColumnType("varchar(70)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasMaxLength(70)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(70)
@@ -206,13 +206,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "63316bad-284a-4b9b-8fd8-d34952859da9",
+                            Id = "614927f7-b8b7-4406-9e9c-13fef1d87c24",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "52c175f4-013d-4662-8e0e-ab783536dcc0",
+                            Id = "70e149fb-b00a-4ff9-9049-66808893b363",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
