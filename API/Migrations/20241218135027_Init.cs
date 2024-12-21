@@ -96,13 +96,15 @@ namespace API.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "TEXT", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PictureUrl = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Category = table.Column<string>(type: "varchar(70)", maxLength: 70, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<long>(type: "bigint", nullable: false),
-                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    PublicId = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
+                    PictureUrl = table.Column<string>(type: "TEXT", maxLength: 70, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PicturePublicId = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PictureUrls = table.Column<string>(type: "TEXT", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PicturePublicIds = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -271,8 +273,8 @@ namespace API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "614927f7-b8b7-4406-9e9c-13fef1d87c24", null, "Member", "MEMBER" },
-                    { "70e149fb-b00a-4ff9-9049-66808893b363", null, "Admin", "ADMIN" }
+                    { "c0d1fd43-b000-4472-a6c0-f7993d38a90f", null, "Admin", "ADMIN" },
+                    { "f5cc92a8-4a02-408b-b352-01dce7409125", null, "Member", "MEMBER" }
                 });
 
             migrationBuilder.CreateIndex(

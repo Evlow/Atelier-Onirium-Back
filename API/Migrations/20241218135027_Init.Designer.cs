@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AtelierOniriumContext))]
-    [Migration("20241217142543_Init")]
+    [Migration("20241218135027_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -66,45 +66,6 @@ namespace API.Migrations
                     b.HasIndex("CreationId");
 
                     b.ToTable("BasketItems");
-                });
-
-            modelBuilder.Entity("API.Entities.Creation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Category")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(70)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(70)
-                        .HasColumnType("varchar(70)");
-
-                    b.Property<string>("PictureUrl")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PublicId")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<int>("QuantityInStock")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Creations");
                 });
 
             modelBuilder.Entity("API.Entities.User", b =>
@@ -176,6 +137,46 @@ namespace API.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Creation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(70)
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(70)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(70)
+                        .HasColumnType("varchar(70)");
+
+                    b.Property<string>("PicturePublicId")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("PicturePublicIds")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<string>("PictureUrl")
+                        .HasMaxLength(70)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PictureUrls")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Creations");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -206,13 +207,13 @@ namespace API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "614927f7-b8b7-4406-9e9c-13fef1d87c24",
+                            Id = "f5cc92a8-4a02-408b-b352-01dce7409125",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "70e149fb-b00a-4ff9-9049-66808893b363",
+                            Id = "c0d1fd43-b000-4472-a6c0-f7993d38a90f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -348,7 +349,7 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.Creation", "Creation")
+                    b.HasOne("Creation", "Creation")
                         .WithMany()
                         .HasForeignKey("CreationId")
                         .OnDelete(DeleteBehavior.Cascade)
