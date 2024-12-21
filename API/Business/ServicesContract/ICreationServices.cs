@@ -16,7 +16,7 @@ namespace API.Business.ServicesContract
         Task<CreationDTO> GetCreationByIdAsync(int Id);
         Task<CreationDTO> GetCreationByNameAsync(string name);
         Task<CreationDTO> CreateCreationAsync(CreationDTO creationDTO);
-        Task<CreationDTO> UpdateCreationAsync( CreationDTO creation);
+        Task<CreationDTO> UpdateCreationAsync( CreationDTO creationDTO);
         Task<CreationDTO> DeleteCreationAsync(int creationId);
     }
 }

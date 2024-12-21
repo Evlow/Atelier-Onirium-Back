@@ -1,20 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace API.Business.DTO
+public class CreationDTO
 {
-    // DTO (Data Transfer Object) pour représenter une création
-    // Utilisé pour transférer les données entre les couches de l'application sans exposer les entités de la base de données directemen
-    public class CreationDTO
-    {
     public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string PictureUrl { get; set; }
-        public string Category { get; set; }
-                public IFormFile File { get; set; }
-        public string? PublicId { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    
+    // Image principale
+    public IFormFile MainImage { get; set; } 
+    
+    // Images supplémentaires
+    public List<IFormFile> AdditionalImages { get; set; } 
+
+    // URLs des images
+    public string PictureUrl { get; set; }
+    public List<string> PictureUrls { get; set; }
+
+    // PublicIds des images
+    public string PicturePublicId { get; set; }
+    public List<string> PicturePublicIds { get; set; }
+
+    public CreationDTO()
+    {
+        PictureUrls = new List<string>();
+        PicturePublicIds = new List<string>();
     }
 }

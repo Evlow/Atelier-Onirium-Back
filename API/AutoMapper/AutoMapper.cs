@@ -17,8 +17,8 @@ namespace API.AutoMapper
             // Mappage bidirectionnel entre l'entité Creation et le DTO CreationDTO
             // ReverseMap() permet de mapper dans les deux sens : de Creation vers CreationDTO et vice-versa
             CreateMap<Creation, CreationDTO>().ReverseMap();
-            CreateMap<Basket, BasketDTO>().ReverseMap();
-            CreateMap<BasketItems, BasketItemsDTO>().ReverseMap();
+            // CreateMap<Basket, BasketDTO>().ReverseMap();
+            // CreateMap<BasketItems, BasketItemsDTO>().ReverseMap();
 
 
         }

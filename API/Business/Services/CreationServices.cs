@@ -70,7 +70,7 @@ namespace API.Business.Services
 
             CreationGet.Name = creation.Name;
             CreationGet.Description = creation.Description;
-                        CreationGet.PictureUrl = creation.PictureUrl;
+                        CreationGet.PictureUrls = creation.PictureUrls;
 
 
             var CreationUpdated = await _creationRepository.UpdateCreationAsync(CreationGet).ConfigureAwait(false);
