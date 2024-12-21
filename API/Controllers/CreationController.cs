@@ -1,166 +1,158 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using API.Business.DTO;
 using API.Business.Services;
 using API.Business.ServicesContract;
 using API.Data;
 using API.Entities;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-
     public class CreationController : BaseApiController
     {
         private readonly AtelierOniriumContext _context;
         private readonly ImageService _imageService;
         private readonly ICreationServices _creationService;
         private readonly IMapper _mapper;
+
+        // Constructor
         public CreationController(ICreationServices creationService, ImageService imageService, IMapper mapper, AtelierOniriumContext context)
         {
             _mapper = mapper;
             _creationService = creationService;
             _imageService = imageService;
             _context = context;
-
         }
 
+        // GET: api/Creation
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(typeof(List<CreationDTO>), 200)]
-        public async Task<ActionResult> GetCreationsAsync()
+        public async Task<ActionResult> GetCreations()
         {
-            var creations = await _creationService.GetCreationsAsync().ConfigureAwait(false);
-
-            return Ok(creations);
-        }
-
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(CreationDTO), 200)]
-        public async Task<ActionResult> CreationId(int id)
-        {
-
-            var creation = await _creationService.GetCreationByIdAsync(id);
-
-            if (creation == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(creation);
-
-        }
-        [HttpPost]
-                [Authorize(Roles = "Admin")]
-
-        public async Task<ActionResult> CreateCreationAsync([FromForm] CreationDTO creationDTO)
-        {
-            var creation = _mapper.Map<CreationDTO>(creationDTO);
-
-            if (creation.File != null)
-            {
-                var imageResult = await _imageService.AddImageAsync(creation.File);
-
-                if (imageResult.Error != null)
-                    return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
-
-
-                creation.PictureUrl = imageResult.SecureUrl.ToString();
-                creation.PublicId = imageResult.PublicId;
-
-            }
-
             try
             {
-                var creationAdded = await _creationService.CreateCreationAsync(creation).ConfigureAwait(false);
-                return Ok(creationAdded);
+                var creations = await _creationService.GetCreationsAsync();
+                return Ok(creations);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    Error = e.Message,
-                });
+                return StatusCode(500, $"Une erreur est survenue lors de la récupération des créations : {ex.Message}");
             }
         }
 
-
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UpdateCreationAsync([FromForm] CreationDTO creationDTO)
+        // GET: api/Creation/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetCreation(int id)
         {
-            // Récupérer la création existante
-            var creation = await _creationService.GetCreationByIdAsync(creationDTO.Id).ConfigureAwait(false);
-
-            if (creation == null)
-                return NotFound(new ProblemDetails { Title = "La création spécifiée n'existe pas." });
-
-            // Mettre à jour les propriétés via le mapper
-            _mapper.Map(creationDTO, creation);
-            creation.Name = creationDTO.Name;  
-            creation.Description = creationDTO.Description;
-            creation.PictureUrl = creationDTO.PictureUrl;   
-            creation.PublicId = creationDTO.PublicId;   
-            
-            // Vérifier s'il y a un fichier image
-            if (creationDTO.File != null)
+            try
             {
-                var imageResult = await _imageService.AddImageAsync(creationDTO.File).ConfigureAwait(false);
-
-                if (imageResult.Error != null)
-                    return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
-
-                // Supprimer l'ancienne image si elle existe
-                if (!string.IsNullOrEmpty(creation.PublicId))
+                var creation = await _creationService.GetCreationByIdAsync(id);
+                if (creation == null)
                 {
-                    await _imageService.DeleteImageAsync(creation.PublicId).ConfigureAwait(false);
+                    return NotFound($"Création avec l'identifiant {id} non trouvée.");
+                }
+                return Ok(creation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Une erreur est survenue lors de la récupération de la création : {ex.Message}");
+            }
+        }
+
+        // POST: api/Creation
+       [HttpPost]
+public async Task<ActionResult<CreationDTO>> CreateCreation([FromForm] CreationDTO creationDTO)
+{
+    try
+    {
+        // Upload de l'image principale
+        if (creationDTO.MainImage != null)
+        {
+            var mainImageResult = await _imageService.AddImageAsync(creationDTO.MainImage);
+            creationDTO.PictureUrl = mainImageResult?.SecureUrl?.ToString();
+            creationDTO.PicturePublicId = mainImageResult?.PublicId;
+        }
+
+        // Upload des images supplémentaires
+        if (creationDTO.AdditionalImages != null && creationDTO.AdditionalImages.Any())
+        {
+            var additionalImageResults = await _imageService.AddImagesAsync(creationDTO.AdditionalImages);
+            creationDTO.PictureUrls = additionalImageResults
+                                        .Select(result => result.SecureUrl.ToString())
+                                        .ToList();
+            creationDTO.PicturePublicIds = additionalImageResults
+                                            .Select(result => result.PublicId)
+                                            .ToList();
+        }
+
+        // Logique pour enregistrer la création dans la base de données (par exemple avec un service de création)
+        var creation = await _creationService.CreateCreationAsync(creationDTO);
+
+        return CreatedAtAction(nameof(GetCreation), new { id = creation.Id }, creation);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Erreur lors de la création : {ex.Message}");
+    }
+}
+
+
+        // PUT: api/Creation/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateCreation(int id, [FromForm] CreationDTO creationDTO, [FromForm] List<IFormFile> files)
+        {
+            try
+            {
+                if (creationDTO == null)
+                {
+                    return BadRequest("Les données de création sont manquantes.");
                 }
 
-                // Mettre à jour les détails de l'image
-                creation.PictureUrl = imageResult.SecureUrl.ToString();
-                creation.PublicId = imageResult.PublicId;
-            }
+                if (creationDTO.Id != id)
+                {
+                    return BadRequest("Les identifiants ne correspondent pas.");
+                }
 
-            try
-            {
-                // Sauvegarder les modifications dans la base de données via le service
-                var updatedCreation = await _creationService.UpdateCreationAsync( creation).ConfigureAwait(false);
+                // Gérer les fichiers d'images pour la mise à jour
+                var uploadedImages = await _imageService.AddImagesAsync(files);
+                if (uploadedImages.Any())
+                {
+                    // Assigner la nouvelle photo principale
+                    creationDTO.PictureUrl = uploadedImages.FirstOrDefault()?.SecureUrl?.ToString();
 
-                // Retourner la création mise à jour
+                    // Assigner les autres images supplémentaires
+                    creationDTO.PictureUrls = uploadedImages.Skip(1).Select(img => img.SecureUrl?.ToString()).ToList();
+                }
+
+                var updatedCreation = await _creationService.UpdateCreationAsync(creationDTO);
                 return Ok(updatedCreation);
             }
             catch (Exception ex)
             {
-                // Gestion des exceptions et retour d'une erreur 500
-                return StatusCode(500, new ProblemDetails { Title = "Une erreur est survenue lors de la mise à jour.", Detail = ex.Message });
+                return StatusCode(500, $"Une erreur est survenue lors de la mise à jour de la création : {ex.Message}");
             }
         }
 
-
-
+        // DELETE: api/Creation/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteCreationAsync(int id)
+        public async Task<ActionResult> DeleteCreation(int id)
         {
             try
             {
-                var creationDeleted = await _creationService.DeleteCreationAsync(id).ConfigureAwait(false);
-
-                return Ok(creationDeleted);
-                
+                var deletedCreation = await _creationService.DeleteCreationAsync(id);
+                return Ok(deletedCreation);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    Error = e.Message,
-                });
+                return StatusCode(500, $"Une erreur est survenue lors de la suppression de la création : {ex.Message}");
             }
-
-
-
         }
-
-    };
+    }
 }
