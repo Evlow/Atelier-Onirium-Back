@@ -50,9 +50,7 @@ namespace API.Business.Services
 
         public async Task<CreationDTO> CreateCreationAsync(CreationDTO creationDTO)
         {
-            var isExiste = await CheckCreationNameExisteAsync(creationDTO.Name).ConfigureAwait(false);
-            if (isExiste)
-                throw new Exception("Il existe déjà une création avec le même nom.");
+
 
             var creationToAdd = _mapper.Map<Creation>(creationDTO);
 
@@ -70,7 +68,8 @@ namespace API.Business.Services
 
             CreationGet.Name = creation.Name;
             CreationGet.Description = creation.Description;
-                        CreationGet.PictureUrls = creation.PictureUrls;
+            CreationGet.PictureUrl = creation.PictureUrl;
+            CreationGet.PictureUrls = creation.PictureUrls;
 
 
             var CreationUpdated = await _creationRepository.UpdateCreationAsync(CreationGet).ConfigureAwait(false);
