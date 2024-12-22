@@ -105,40 +105,66 @@ public async Task<ActionResult<CreationDTO>> CreateCreation([FromForm] CreationD
 
 
         // PUT: api/Creation/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCreation(int id, [FromForm] CreationDTO creationDTO, [FromForm] List<IFormFile> files)
+   [HttpPut("{id}")]
+public async Task<ActionResult> UpdateCreation(int id, [FromForm] CreationDTO creationDTO, [FromForm] List<IFormFile> files)
+{
+    try
+    {
+        if (creationDTO == null)
         {
-            try
-            {
-                if (creationDTO == null)
-                {
-                    return BadRequest("Les données de création sont manquantes.");
-                }
-
-                if (creationDTO.Id != id)
-                {
-                    return BadRequest("Les identifiants ne correspondent pas.");
-                }
-
-                // Gérer les fichiers d'images pour la mise à jour
-                var uploadedImages = await _imageService.AddImagesAsync(files);
-                if (uploadedImages.Any())
-                {
-                    // Assigner la nouvelle photo principale
-                    creationDTO.PictureUrl = uploadedImages.FirstOrDefault()?.SecureUrl?.ToString();
-
-                    // Assigner les autres images supplémentaires
-                    creationDTO.PictureUrls = uploadedImages.Skip(1).Select(img => img.SecureUrl?.ToString()).ToList();
-                }
-
-                var updatedCreation = await _creationService.UpdateCreationAsync(creationDTO);
-                return Ok(updatedCreation);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Une erreur est survenue lors de la mise à jour de la création : {ex.Message}");
-            }
+            return BadRequest("Les données de création sont manquantes.");
         }
+
+        if (creationDTO.Id != id)
+        {
+            return BadRequest("Les identifiants ne correspondent pas.");
+        }
+
+        // Check if there is a new main image to upload and delete the old one if needed
+        if (creationDTO.MainImage != null)
+        {
+            // Delete old main image if it exists
+            if (!string.IsNullOrEmpty(creationDTO.PicturePublicId))
+            {
+                await _imageService.DeleteImageAsync(creationDTO.PicturePublicId);
+            }
+
+            // Upload the new main image
+            var mainImageResult = await _imageService.AddImageAsync(creationDTO.MainImage);
+            creationDTO.PictureUrl = mainImageResult?.SecureUrl?.ToString();
+            creationDTO.PicturePublicId = mainImageResult?.PublicId;
+        }
+
+        // Check if there are new additional images and delete old ones if needed
+        if (creationDTO.AdditionalImages != null && creationDTO.AdditionalImages.Any())
+        {
+            // Delete old additional images if they exist
+            if (creationDTO.PicturePublicIds != null && creationDTO.PicturePublicIds.Any())
+            {
+                foreach (var publicId in creationDTO.PicturePublicIds)
+                {
+                    await _imageService.DeleteImageAsync(publicId);
+                }
+            }
+
+            // Upload new additional images
+            var additionalImageResults = await _imageService.AddImagesAsync(creationDTO.AdditionalImages);
+            creationDTO.PictureUrls = additionalImageResults
+                                        .Select(result => result.SecureUrl.ToString())
+                                        .ToList();
+            creationDTO.PicturePublicIds = additionalImageResults
+                                            .Select(result => result.PublicId)
+                                            .ToList();
+        }
+
+        var updatedCreation = await _creationService.UpdateCreationAsync(creationDTO);
+        return Ok(updatedCreation);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Une erreur est survenue lors de la mise à jour de la création : {ex.Message}");
+    }
+}
 
         // DELETE: api/Creation/{id}
         [HttpDelete("{id}")]
